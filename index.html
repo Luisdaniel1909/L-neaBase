@@ -1,0 +1,661 @@
+
+
+<!DOCTYPE html>
+
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>LíneaBase · Mapas EDT y diagramas de proceso ASME GRATIS</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cloudflare.com"></script>
+
+<style>
+
+:root{--bg:#f4f6fa;--pn:#fff;--tx:#1b2433;--mu:#6b778c;--bd:#d9dfe9;--ac:#1e5bd8}
+
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+
+body{font:14px 'Poppins',system-ui,sans-serif;background:var(--bg);color:var(--tx);display:flex;flex-direction:column;overflow:hidden;font-weight: lighter;}
+
+button,select,input{font:inherit;color:var(--tx);background:var(--pn);border:1px solid var(--bd);border-radius:6px;padding:6px 10px}
+
+button{cursor:pointer}button:hover{border-color:var(--ac)}button.on,button.pri{background:var(--ac);color:#fff;border-color:var(--ac)}button.er{color:#d64545}
+
+.sp{flex:1}.mu{color:var(--mu)}
+
+#hd,#sb{display:flex;gap:6px;align-items:center;padding:6px 10px;background:var(--pn);border-bottom:1px solid var(--bd);flex-wrap:wrap}
+
+.lg{color:var(--ac);font-size:16px;margin-right:6px}
+
+#tools{display:flex;gap:4px;flex-wrap:wrap}#tools button{padding:5px 9px}
+
+.cr{border:0;background:none;padding:2px 4px;font-weight:600}
+
+main{flex:1;display:flex;min-height:0}
+
+#cv{flex:1;position:relative;overflow:hidden;touch-action:none;cursor:grab;background-image:radial-gradient(var(--bd) 1.2px,transparent 1.2px);background-size:24px 24px}
+
+#world{position:absolute;left:0;top:0;transform-origin:0 0}
+
+#ins{display:none;width:270px;padding:12px;background:var(--pn);border-left:1px solid var(--bd);overflow:auto}
+
+#ins label{display:block;margin-bottom:10px;font-size:12px;color:var(--mu)}#ins input,#ins select{width:100%;margin-top:3px;font-size:14px}
+
+.bt{display:flex;gap:6px;flex-wrap:wrap}
+
+#mt{display:flex;gap:12px;padding:7px 12px;background:var(--pn);border-top:1px solid var(--bd);font-size:13px;align-items:center;flex-wrap:wrap}
+
+#mt a{color:var(--ac);font-weight:600;text-decoration:none}
+
+/* nodos */
+
+.n{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center;padding:6px;border:2px solid var(--c,var(--ac));background:var(--pn);border-radius:6px;cursor:move;user-select:none;z-index:1;overflow:hidden;font-size:12px;line-height:1.2}
+
+.n.sel{box-shadow:0 0 0 3px #e0a10099;border-color:#e0a100}
+
+.n.m{border-radius:12px;font-size:12px}.m .t{font-weight:700;font-size:13px}
+
+.pb{width:100%;height:6px;background:var(--bd);border-radius:4px}.pb i{display:block;height:100%;background:var(--c);border-radius:4px}
+
+.op{padding:2px 10px;font-size:11px;background:var(--c);color:#fff;border:0}
+
+.cp{border:0;background:var(--c)}.cp::before{content:"";position:absolute;inset:2px;background:var(--pn);clip-path:inherit}.cp.sel{--c:#e0a100;box-shadow:none}.tx{position:relative}
+
+.s-start{border-radius:40px}.s-op{border-radius:50%}.s-delay{border-radius:0 50% 50% 0}.s-note{background:#fff7c2;color:#333;border-style:dashed;border-radius:4px}
+
+.k-op{--c:#1f9d55}.k-insp{--c:#e0a100;border-radius:0}.k-trans{--c:#6f42c1}.k-delay{--c:#d64545}.k-store{--c:#8793a8}
+
+.ctr{position:absolute;left:-80px;top:-80px;width:160px;height:160px;border-radius:50%;background:var(--ac);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14px;z-index:1;box-shadow:0 6px 20px #0003}
+
+.ctr small{opacity:.85}.ctr em{font-style:normal;font-size:22px;font-weight:800}
+
+#ed{position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible;pointer-events:none}
+
+.ed{stroke:#667;stroke-width:2;fill:none}.ed.d{stroke:#8aa0c8;stroke-dasharray:6 5}
+
+.hit{stroke:transparent;stroke-width:14;fill:none;pointer-events:stroke;cursor:pointer}
+
+#ed text{font:700 12px 'Poppins',system-ui,sans-serif;fill:var(--tx);text-anchor:middle;paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+
+dialog{background:var(--pn);color:var(--tx);border:1px solid var(--bd);border-radius:12px;padding:20px;width:min(360px,92vw)}
+
+dialog input{width:100%;margin:6px 0}
+
+#tt{position:fixed;bottom:50px;left:50%;transform:translateX(-50%);background:#1b2433;color:#fff;padding:8px 14px;border-radius:8px;display:none;z-index:9;max-width:90vw}
+
+@media(max-width:700px){#ins{position:fixed;bottom:36px;left:0;right:0;width:auto;max-height:45vh;border-top:1px solid var(--bd)}}
+
+@media print{#hd,#sb,#ins,#tt{display:none!important}body{overflow:visible}#cv{background:none}@page{size:landscape}}
+
+
+
+/* ===== Tutorial de bienvenida · Health-Bin ===== */
+#hbHelp{
+  position:relative;
+  overflow:hidden;
+  border-color:#20f2a066;
+  color:#0b5e46;
+  background:linear-gradient(135deg,#f2fff9,#ffffff);
+  font-weight:700;
+}
+#hbHelp::after{
+  content:"";
+  position:absolute;
+  inset:-70% -30%;
+  background:linear-gradient(110deg,transparent 42%,#20f2a02e 50%,transparent 58%);
+  transform:translateX(-60%);
+  animation:hbHelpShine 4.5s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes hbHelpShine{0%,65%{transform:translateX(-65%)}85%,100%{transform:translateX(65%)}}
+
+.hb-guide{
+  --hb-green:#20f2a0;
+  --hb-blue:#2458d3;
+  --hb-dark:#04001c;
+  --hb-panel:#0b1020;
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:grid;
+  place-items:center;
+  padding:22px;
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .28s ease,visibility .28s ease;
+  background:rgba(3,7,18,.74);
+  backdrop-filter:blur(10px);
+}
+.hb-guide.show{opacity:1;visibility:visible}
+.hb-guide-shell{
+  width:min(940px,96vw);
+  max-height:min(760px,94vh);
+  overflow:auto;
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);
+  gap:26px;
+  padding:28px;
+  color:#f5f8ff;
+  border:1px solid #ffffff18;
+  border-radius:26px;
+  background:
+    radial-gradient(circle at 88% 10%,#20f2a018 0 14%,transparent 38%),
+    radial-gradient(circle at 8% 92%,#2458d32c 0 12%,transparent 42%),
+    linear-gradient(145deg,#0c1223 0%,#070a14 58%,#04001c 100%);
+  box-shadow:0 34px 90px #0009, inset 0 1px #ffffff12;
+  transform:translateY(18px) scale(.985);
+  transition:transform .34s cubic-bezier(.2,.8,.2,1);
+}
+.hb-guide.show .hb-guide-shell{transform:none}
+.hb-guide-close{
+  position:absolute;
+  right:14px;
+  top:14px;
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  border:1px solid #ffffff1f;
+  color:#dce6f5;
+  background:#ffffff0b;
+  font-size:22px;
+  line-height:1;
+  display:grid;
+  place-items:center;
+  z-index:4;
+}
+.hb-guide-close:hover{border-color:#20f2a080;background:#20f2a012;color:#fff}
+.hb-guide-brand{display:inline-flex;align-items:center;gap:9px;margin-bottom:15px;font-size:12px;font-weight:700;letter-spacing:.04em;color:#a9b5cb}
+.hb-guide-brand i{width:11px;height:11px;border-radius:50%;background:var(--hb-green);box-shadow:0 0 0 6px #20f2a013,0 0 24px #20f2a08f;animation:hbPulse 2.2s ease-in-out infinite}
+@keyframes hbPulse{50%{box-shadow:0 0 0 10px #20f2a008,0 0 34px #20f2a0b0}}
+.hb-guide h2{margin:0 0 10px;font-size:clamp(26px,4vw,42px);line-height:1.05;letter-spacing:-.035em}
+.hb-guide h2 span{background:linear-gradient(90deg,#fff 0%,#84ffd1 52%,#7ba7ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hb-guide-lead{margin:0 0 20px;color:#aebbd0;font-size:14px;line-height:1.65;max-width:560px}
+.hb-guide-steps{display:grid;gap:10px;margin:0 0 20px}
+.hb-guide-step{
+  display:grid;
+  grid-template-columns:40px 1fr;
+  gap:12px;
+  align-items:center;
+  padding:11px 12px;
+  border:1px solid #ffffff12;
+  border-radius:14px;
+  background:#ffffff08;
+  transition:.25s ease;
+}
+.hb-guide-step:hover{transform:translateX(4px);border-color:#20f2a04b;background:#20f2a00b}
+.hb-guide-num{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-weight:800;color:#04140f;background:linear-gradient(135deg,#73ffd0,var(--hb-green));box-shadow:0 8px 22px #20f2a01f}
+.hb-guide-step b{display:block;font-size:13px;margin-bottom:2px;color:#f7f9ff}.hb-guide-step span{font-size:12px;line-height:1.45;color:#91a0b8}
+.hb-guide-footer{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:4px}
+.hb-guide-check{display:flex;align-items:center;gap:9px;color:#9eabc0;font-size:12px;cursor:pointer;user-select:none}
+.hb-guide-check input{appearance:none;width:18px;height:18px;margin:0;padding:0;border-radius:5px;border:1px solid #5e6d85;background:#0a1020;display:grid;place-items:center;cursor:pointer}
+.hb-guide-check input:checked{border-color:var(--hb-green);background:var(--hb-green)}
+.hb-guide-check input:checked::after{content:"✓";color:#03140e;font-size:13px;font-weight:900;line-height:1}
+.hb-guide-start{border:0!important;border-radius:12px!important;padding:11px 18px!important;color:#03150f!important;background:linear-gradient(135deg,#75ffd3,var(--hb-green))!important;font-weight:800!important;box-shadow:0 10px 26px #20f2a02d;transition:.22s ease!important}
+.hb-guide-start:hover{transform:translateY(-2px);box-shadow:0 14px 32px #20f2a046!important}
+
+.hb-guide-demo{
+  min-height:420px;
+  position:relative;
+  align-self:stretch;
+  border:1px solid #ffffff15;
+  border-radius:22px;
+  overflow:hidden;
+  background:
+    radial-gradient(#ffffff1e 1px,transparent 1px),
+    linear-gradient(180deg,#0b1120,#070b15);
+  background-size:22px 22px,auto;
+  box-shadow:inset 0 1px #ffffff0d;
+}
+.hb-guide-demo::before{display: none; content:"Vista rápida";position:absolute;left:16px;top:14px;z-index:5;padding:5px 9px;border-radius:20px;background:#ffffff0c;border:1px solid #ffffff12;color:#98a8bf;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.hb-demo-bar{height:46px;border-bottom:1px solid #ffffff10;background:#0e1526cc;display:flex;align-items:center;gap:7px;padding:0 14px}
+.hb-demo-dot{width:8px;height:8px;border-radius:50%;background:#516078}.hb-demo-dot:nth-child(2){background:#6f7f97}.hb-demo-dot:nth-child(3){background:var(--hb-green)}
+.hb-demo-canvas{position:absolute;inset:46px 0 0;overflow:hidden}
+.hb-demo-hub{position:absolute;left:50%;top:49%;width:112px;height:112px;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;text-align:center;padding:14px;background:linear-gradient(145deg,#2458d3,#153987);box-shadow:0 0 0 8px #2458d313,0 18px 46px #0007;color:white;font-size:12px;font-weight:800;z-index:2;animation:hbHub 3s ease-in-out infinite}
+.hb-demo-hub small{display:block;color:#dbe5ff;font-size:9px;font-weight:600;margin-top:3px}
+@keyframes hbHub{50%{transform:translate(-50%,-53%) scale(1.025);box-shadow:0 0 0 12px #2458d30b,0 22px 55px #0008}}
+.hb-demo-node{position:absolute;width:122px;min-height:56px;padding:9px 10px;border-radius:12px;border:1px solid #ffffff1a;background:#121a2bbb;backdrop-filter:blur(5px);box-shadow:0 13px 30px #0005;color:#eef4ff;font-size:10px;font-weight:700;z-index:3;opacity:0;animation:hbNodeIn 6s ease-in-out infinite}
+.hb-demo-node span{display:block;margin-top:4px;color:#8291aa;font-size:8px;font-weight:500}.hb-demo-node::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--hb-green);margin-right:6px;box-shadow:0 0 12px #20f2a0}
+.hb-demo-n1{left:8%;top:17%;animation-delay:.2s}.hb-demo-n2{right:7%;top:18%;animation-delay:.9s}.hb-demo-n3{left:9%;bottom:15%;animation-delay:1.6s}.hb-demo-n4{right:7%;bottom:14%;animation-delay:2.3s}
+@keyframes hbNodeIn{0%,8%{opacity:0;transform:translateY(12px) scale(.94)}16%,72%{opacity:1;transform:none}85%,100%{opacity:.5;transform:translateY(-2px)}}
+.hb-demo-lines{position:absolute;inset:0;width:100%;height:100%;z-index:1;overflow:visible}.hb-demo-lines line{stroke:#3f65ae;stroke-width:1.5;stroke-dasharray:7 7;opacity:.75;animation:hbDash 1.6s linear infinite}.hb-demo-lines line:nth-child(2n){stroke:#20f2a0;animation-delay:.35s}
+@keyframes hbDash{to{stroke-dashoffset:-28}}
+.hb-demo-cursor{position:absolute;z-index:6;width:29px;height:29px;border-radius:50%;display:grid;place-items:center;color:#03120d;background:var(--hb-green);box-shadow:0 0 0 6px #20f2a015,0 8px 20px #0005;font-size:14px;animation:hbCursor 6s cubic-bezier(.42,0,.3,1) infinite}
+@keyframes hbCursor{0%{left:13%;top:23%;transform:scale(.8);opacity:0}8%{opacity:1;transform:scale(1)}28%{left:66%;top:24%}50%{left:48%;top:49%;transform:scale(.9)}72%{left:18%;top:73%;transform:scale(1)}92%{left:72%;top:72%;opacity:1}100%{left:72%;top:72%;opacity:0}}
+.hb-demo-tip{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:8;width:max-content;max-width:86%;padding:7px 11px;border-radius:10px;background:#050914d9;border:1px solid #ffffff13;color:#8fa0b8;font-size:9px;text-align:center;animation:hbTip 6s ease infinite}
+@keyframes hbTip{0%,15%{opacity:0;transform:translate(-50%,6px)}25%,85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+
+@media(max-width:760px){
+  .hb-guide{padding:10px}
+  .hb-guide-shell{grid-template-columns:1fr;padding:22px 18px 18px;border-radius:20px;gap:18px;max-height:96vh}
+  .hb-guide-demo{min-height:300px;order:-1}
+  .hb-guide h2{font-size:30px}
+  .hb-demo-node{width:104px}
+}
+@media(max-width:520px){
+  .hb-guide-demo{display:none}
+  .hb-guide-shell{padding-top:48px}
+  .hb-guide-step{grid-template-columns:34px 1fr}.hb-guide-num{width:34px;height:34px}
+  .hb-guide-footer{align-items:stretch}.hb-guide-start{width:100%}
+}
+@media(prefers-reduced-motion:reduce){#hbHelp::after,.hb-guide-brand i,.hb-demo-hub,.hb-demo-node,.hb-demo-lines line,.hb-demo-cursor,.hb-demo-tip{animation:none!important}.hb-guide-shell,.hb-guide-step,.hb-guide-start{transition:none!important}}
+
+</style></head><body>
+
+<header id="hd"><b class="lg">LíneaBase by <b>Health</b>-Bin</b>
+
+
+<select id="ps" title="Proyecto"></select><button id="np" title="Nuevo proyecto">＋</button><button id="dp" class="er" title="Eliminar proyecto">Borrar</button>
+
+<select id="tp"><option value="">Plantillas…</option><option value="pmbok">EDT · PMBOK (5 grupos)</option><option value="dmaic">Lean Six Sigma · DMAIC</option><option value="asme">Flujo ASME · ejemplo</option><option value="blank">Proyecto en blanco</option></select>
+
+<span class="sp"></span>
+
+<button id="un" title="Deshacer (Ctrl+Z)">↶</button><button id="rd" title="Rehacer (Ctrl+Y)">↷</button><button id="ft">⤢ Ajustar</button><button id="hbHelp" title="Cómo usar LíneaBase">? Tutorial</button>
+
+<button id="ex">⬇ JSON</button><button id="im">⬆ Importar</button><button id="pr">🖨 PDF</button>
+
+<span id="cl" class="mu"></span><button id="ub" class="pri">👤 Ingresar</button></header>
+
+<div id="sb"><nav id="bc"></nav><span class="sp"></span><div id="tools"></div></div>
+
+<main><div id="cv"><div id="world"></div></div><aside id="ins"></aside></main>
+
+<footer id="mt"><span id="mtx"></span><span class="sp"></span><a id="cta" target="_blank" rel="noopener"></a></footer>
+
+<dialog id="am"><h3 style="margin-top:0">Tu cuenta gratuita</h3><p class="mu">Guarda tus proyectos en la nube y expórtalos desde cualquier dispositivo.</p>
+
+<input id="em" type="email" placeholder="correo@ejemplo.com" autocomplete="email"><input id="pw" type="password" placeholder="Contraseña (8+ caracteres)" autocomplete="current-password">
+
+<div id="am-m" class="mu" style="min-height:20px"></div>
+
+<div class="bt"><button id="b1" class="pri">Entrar</button><button id="b2">Crear cuenta</button><button id="b4">Olvidé mi clave</button><button id="b3">Cerrar</button></div></dialog>
+
+
+
+<div id="welcomeTutorial" class="hb-guide" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="hbGuideTitle">
+  <div class="hb-guide-shell">
+    <button id="hbGuideClose" class="hb-guide-close" type="button" aria-label="Cerrar tutorial">×</button>
+
+    <section>
+      <div class="hb-guide-brand"><i></i> LÍNEABASE · HEALTH-BIN</div>
+      <h2 id="hbGuideTitle">Convierte tu proceso en un <span>mapa visual.</span></h2>
+      <p class="hb-guide-lead">Empieza con una plantilla o desde cero. Organiza el trabajo, entra a cada nivel y crea diagramas de proceso sin salir de la misma herramienta.</p>
+
+      <div class="hb-guide-steps">
+        <div class="hb-guide-step">
+          <div class="hb-guide-num">1</div>
+          <div><b>Elige una plantilla</b><span>Usa PMBOK, DMAIC, ASME o crea un proyecto en blanco.</span></div>
+        </div>
+        <div class="hb-guide-step">
+          <div class="hb-guide-num">2</div>
+          <div><b>Agrega y organiza</b><span>Crea tareas, carpetas o flujos. Arrastra los elementos para acomodarlos.</span></div>
+        </div>
+        <div class="hb-guide-step">
+          <div class="hb-guide-num">3</div>
+          <div><b>Abre, conecta y edita</b><span>Entra a un flujo, conecta símbolos y selecciona cualquier elemento para editar sus datos.</span></div>
+        </div>
+        <div class="hb-guide-step">
+          <div class="hb-guide-num">4</div>
+          <div><b>Guarda tu trabajo</b><span>El proyecto se guarda localmente; también puedes exportarlo a JSON o imprimirlo como PDF.</span></div>
+        </div>
+      </div>
+
+      <div class="hb-guide-footer">
+        <label class="hb-guide-check"><input id="hbGuideNoShow" type="checkbox"> No volver a mostrar este cuadro</label>
+        <button id="hbGuideStart" class="hb-guide-start" type="button">Entendido, comenzar →</button>
+      </div>
+    </section>
+
+    <section class="hb-guide-demo" aria-hidden="true">
+      <div class="hb-demo-bar"><i class="hb-demo-dot"></i><i class="hb-demo-dot"></i><i class="hb-demo-dot"></i></div>
+      <div class="hb-demo-canvas">
+        <svg class="hb-demo-lines" viewBox="0 0 420 370" preserveAspectRatio="none">
+          <line x1="210" y1="184" x2="75" y2="88"></line>
+          <line x1="210" y1="184" x2="344" y2="88"></line>
+          <line x1="210" y1="184" x2="80" y2="287"></line>
+          <line x1="210" y1="184" x2="343" y2="286"></line>
+        </svg>
+        <div class="hb-demo-hub">Mi proyecto<small>avance global</small></div>
+        <div class="hb-demo-node hb-demo-n1">📋 Definir<span>Carpeta / nivel</span></div>
+        <div class="hb-demo-node hb-demo-n2">📐 Medir<span>Tarea en curso</span></div>
+        <div class="hb-demo-node hb-demo-n3">🔀 Analizar<span>Flujo de proceso</span></div>
+        <div class="hb-demo-node hb-demo-n4">✅ Mejorar<span>100% completado</span></div>
+        <div class="hb-demo-cursor">↖</div>
+        <div class="hb-demo-tip">Arrastra · abre niveles · conecta · edita</div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<input type="file" id="fi" accept=".json" hidden><div id="tt"></div>
+
+<script>
+
+/* ===== CONFIGURACIÓN (edita estos valores) ===== */
+
+const SB_URL='https://lljesasuqltyfdpxrozy.supabase.co', SB_KEY='sb_publishable_OuhITCxirvPDpRJpVdCsLg_Od9lvOUk';            // Supabase: Project URL y anon/public key. Vacío = modo local sin cuentas.
+
+const GATE=true;                        // true = pedir cuenta gratuita para exportar JSON/PDF (captura de leads)
+
+const CTA={txt:'¿Quieres implementarlo en tu empresa? Agenda una asesoría gratuita',url:'https://www.health-bin.com/p/consultoria-ti.html'};
+
+/* ================================================= */
+
+const $=s=>document.querySelector(s),NS='http://www.w3.org/2000/svg',uid=()=>Math.random().toString(36).slice(2,9);
+
+const E=(t,c,p)=>{const e=document.createElement(t);if(c)e.className=c;if(p)Object.assign(e,p);return e};
+
+const S=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+
+const LS={g:k=>{try{return localStorage.getItem(k)}catch{return null}},s:(k,v)=>{try{localStorage.setItem(k,v);return 1}catch{return 0}}};
+
+const ST={p:['Pendiente','#8793a8'],e:['En curso','#1e5bd8'],h:['Hecho','#1f9d55'],b:['Bloqueado','#d64545']};
+
+const SH={start:{n:'Inicio / Fin',w:130,h:56,c:'s-start'},proc:{n:'Proceso',w:150,h:64,c:''},
+
+dec:{n:'Decisión',w:170,h:96,c:'cp',cp:'polygon(50% 0,100% 50%,50% 100%,0 50%)'},
+
+op:{n:'Operación (ASME ○)',w:96,h:96,c:'s-op',a:'Operación'},insp:{n:'Inspección (ASME □)',w:96,h:76,c:'',a:'Inspección'},
+
+trans:{n:'Transporte (ASME ➜)',w:130,h:64,c:'cp',cp:'polygon(0 25%,70% 25%,70% 0,100% 50%,70% 100%,70% 75%,0 75%)',a:'Transporte'},
+
+delay:{n:'Demora (ASME D)',w:110,h:64,c:'s-delay',a:'Demora'},store:{n:'Almacenaje (ASME ▽)',w:120,h:90,c:'cp',cp:'polygon(0 0,100% 0,50% 100%)',a:'Almacenaje'},
+
+note:{n:'Nota',w:170,h:70,c:'s-note'}};
+
+const GLY={start:'⬭',proc:'▭',dec:'◇',op:'○',insp:'□',trans:'➜',delay:'D',store:'▽',note:'🗒'};
+
+let DB=JSON.parse(LS.g('dp_v1')||'null')||{cur:null,list:[]},path=[],sel=null,view={x:0,y:0,k:1},hist=[],fut=[],link=null,drag=null,pan=null,user=null,sb=null,warned=0;
+
+const cv=$('#cv'),P=()=>DB.list.find(p=>p.id==DB.cur);
+
+const newLevel=(kind,title)=>({kind,title,sub:'',nodes:[],edges:[]});
+
+const node=(k,t,x,y,ex)=>Object.assign({id:uid(),k,t,o:'',s:'p',p:0,ic:'',tm:0,ds:0,x,y},ex);
+
+const lvl=()=>{let l=P().root;for(const id of path){const n=l.nodes.find(n=>n.id==id);if(!n||!n.child)break;l=n.child}return l};
+
+const dims=(l,n)=>{const d=l.kind=='map'?{w:230,h:92}:(SH[n.k]||SH.proc);return[d.w,d.h]};
+
+const np=n=>n.child&&n.child.kind=='map'&&n.child.nodes.length?prog(n.child):(+n.p||0);
+
+const prog=l=>l.nodes.length?Math.round(l.nodes.reduce((s,n)=>s+np(n),0)/l.nodes.length):0;
+
+function toast(m){const t=$('#tt');t.textContent=m;t.style.display='block';clearTimeout(t.h);t.h=setTimeout(()=>t.style.display='none',2800)}
+
+/* ---- estado / historial ---- */
+
+function snap(){hist.push(JSON.stringify(P().root));if(hist.length>60)hist.shift();fut=[]}
+
+function fix(){let l=P().root;const a=[];for(const id of path){const n=l.nodes.find(n=>n.id==id);if(!n||!n.child)break;a.push(id);l=n.child}path=a}
+
+function undo(){if(!hist.length)return;fut.push(JSON.stringify(P().root));P().root=JSON.parse(hist.pop());fix();commit();render()}
+
+function redo(){if(!fut.length)return;hist.push(JSON.stringify(P().root));P().root=JSON.parse(fut.pop());fix();commit();render()}
+
+let tm;function commit(){P().updated=Date.now();save()}
+
+function save(){if(!LS.s('dp_v1',JSON.stringify(DB))&&!warned){warned=1;toast('⚠ El navegador bloquea el guardado local (¿iframe/privado?). Inicia sesión o exporta JSON.')}clearTimeout(tm);tm=setTimeout(()=>cloudSave(),1500)}
+
+/* ---- render ---- */
+
+function applyView(){$('#world').style.transform=`translate(${view.x}px,${view.y}px) scale(${view.k})`;cv.style.backgroundPosition=`${view.x}px ${view.y}px`;cv.style.backgroundSize=`${24*view.k}px ${24*view.k}px`}
+
+function fit(){const l=lvl(),c=cv.getBoundingClientRect();let r=l.nodes.map(n=>{const[w,h]=dims(l,n);return[n.x,n.y,n.x+w,n.y+h]});if(l.kind=='map')r.push([-80,-80,80,80]);if(!r.length)r=[[-100,-60,100,60]];
+
+const x0=Math.min(...r.map(a=>a[0])),y0=Math.min(...r.map(a=>a[1])),x1=Math.max(...r.map(a=>a[2])),y1=Math.max(...r.map(a=>a[3]));
+
+const k=Math.max(.2,Math.min(1.2,(c.width-60)/(x1-x0),(c.height-60)/(y1-y0)));view={k,x:c.width/2-(x0+x1)/2*k,y:c.height/2-(y0+y1)/2*k};applyView()}
+
+function render(){const l=lvl(),w=$('#world');w.replaceChildren();
+
+const sv=S('svg',{id:'ed'});sv.innerHTML='<defs><marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0L10 4L0 8z" fill="#667"/></marker></defs><g id="eg"></g>';w.append(sv);
+
+if(l.kind=='map'){const c=E('div','ctr');const b=E('b','',{textContent:l.title}),s=E('small','',{textContent:l.sub}),p=E('em','',{textContent:prog(l)+'%'});c.append(b,s,p);w.append(c)}
+
+l.nodes.forEach(n=>w.append(nodeEl(l,n)));drawEdges();crumbs();tools();inspector();metrics();applyView()}
+
+function nodeEl(l,n){const[w,h]=dims(l,n),e=E('div','n');e.dataset.id=n.id;Object.assign(e.style,{left:n.x+'px',top:n.y+'px',width:w+'px',height:h+'px'});
+
+if(l.kind=='map'){e.classList.add('m');e.style.setProperty('--c',(ST[n.s||'p']||ST.p)[1]);
+
+const r1=E('div','t',{textContent:(n.ic?n.ic+' ':'')+n.t}),r2=E('div','',{textContent:(n.o?'👤 '+n.o+' · ':'')+(ST[n.s||'p']||ST.p)[0]}),pg=E('div','pb'),pi=E('i');pi.style.width=np(n)+'%';pg.append(pi);e.append(r1,r2,pg);
+
+if(n.k!='task'){const b=E('button','op',{textContent:(n.k=='flow'?'Ver flujo':'Abrir')+' ▸'});b.dataset.open=n.id;e.append(b)}}
+
+else{const s=SH[n.k]||SH.proc;e.classList.add(...[s.c,'k-'+n.k].filter(Boolean));if(s.cp)e.style.clipPath=s.cp;e.append(E('span','tx',{textContent:n.t+(+n.tm?` · ${n.tm}′`:'')}))}
+
+if(sel==n.id)e.classList.add('sel');return e}
+
+function edgePt(cx,cy,w,h,tx,ty){const dx=tx-cx,dy=ty-cy;if(!dx&&!dy)return[cx,cy];const s=Math.min(dx?w/2/Math.abs(dx):1e9,dy?h/2/Math.abs(dy):1e9);return[cx+dx*s,cy+dy*s]}
+
+function drawEdges(){const l=lvl(),g=$('#eg');if(!g)return;g.replaceChildren();const f=l.kind=='flow';
+
+const bx=id=>{if(id=='c')return{x:-80,y:-80,w:160,h:160};const n=l.nodes.find(n=>n.id==id);if(!n)return null;const[w,h]=dims(l,n);return{x:n.x,y:n.y,w,h}};
+
+(f?l.edges.map((e,i)=>[e.a,e.b,e.l,i]):l.nodes.map(n=>['c',n.id,'',-1])).forEach(([a,b,lb,i])=>{const A=bx(a),B=bx(b);if(!A||!B)return;
+
+const ac=[A.x+A.w/2,A.y+A.h/2],bc=[B.x+B.w/2,B.y+B.h/2],p=edgePt(...ac,A.w,A.h,...bc),q=edgePt(...bc,B.w,B.h,...ac),d=`M${p}L${q}`;
+
+const ln=S('path',{d,class:f?'ed':'ed d'});if(f)ln.setAttribute('marker-end','url(#ar)');g.append(ln);
+
+if(f){const h=S('path',{d,class:'hit'});h.dataset.e=i;g.append(h);if(lb){const t=S('text',{x:(p[0]+q[0])/2,y:(p[1]+q[1])/2-4});t.textContent=lb;g.append(t)}}})}
+
+function crumbs(){const b=$('#bc');b.replaceChildren();let l=P().root;const nm=[P().name];for(const id of path){const n=l.nodes.find(n=>n.id==id);nm.push(n.t);l=n.child}
+
+nm.forEach((t,i)=>{if(i)b.append(' › ');const x=E('button','cr',{textContent:t,title:i?'':'Doble clic para renombrar',onclick:()=>{path=path.slice(0,i);sel=null;link=null;render();fit()}});
+
+if(!i)x.ondblclick=()=>{const v=prompt('Nombre del proyecto',t);if(v&&v.trim()){P().name=v.trim();commit();fillSel();render()}};b.append(x)})}
+
+function tools(){const t=$('#tools'),l=lvl();t.replaceChildren();const B=(tx,fn,ti,cl)=>t.append(E('button',cl||'',{textContent:tx,title:ti||tx,onclick:fn}));
+
+if(l.kind=='map'){B('＋ Tarea',()=>add('task'));B('＋ Carpeta',()=>add('map'),'Sub-nivel jerárquico (EDT)');B('＋ Flujo',()=>add('flow'),'Diagrama de flujo / ASME')}
+
+else{for(const k in SH)B(GLY[k],()=>add(k),SH[k].n);B('🔗 Conectar',()=>{link=link===null?'':null;tools();toast(link===null?'Conexión desactivada':'Elige el símbolo de origen y luego el destino (Esc para salir)')},'Conectar símbolos',link!==null?'on':'')}}
+
+function metrics(){const l=lvl();let h;
+
+if(l.kind=='map'){h=`Avance global: <b>${prog(l)}%</b> · ${l.nodes.length} elementos · ${l.nodes.filter(n=>np(n)>=100).length} completados`}
+
+else{const c={},T={};let tt=0,dd=0;l.nodes.forEach(n=>{c[n.k]=(c[n.k]||0)+1;if(SH[n.k]&&SH[n.k].a){T[n.k]=(T[n.k]||0)+(+n.tm||0);tt+=+n.tm||0;dd+=+n.ds||0}});
+
+const nv=(T.trans||0)+(T.delay||0)+(T.store||0);
+
+h=['op','insp','trans','delay','store'].map(k=>`${GLY[k]} ${SH[k].a} ${c[k]||0}`).join(' · ')+` | ⏱ ${tt} min · 📏 ${dd} m`+(tt?` | Valor agregado: <b>${Math.round((T.op||0)/tt*100)}%</b> · Desperdicio (transp.+demora+almac.): <b>${Math.round(nv/tt*100)}%</b>`:' — captura tiempos para calcular el % de valor agregado')}
+
+$('#mtx').innerHTML=h}
+
+function inspector(){const a=$('#ins'),l=lvl(),n=l.nodes.find(n=>n.id==sel);a.style.display=n?'block':'none';a.replaceChildren();if(!n)return;const f=l.kind=='flow';
+
+const F=(lb,key,type,opts)=>{const w=E('label');w.append(lb);let i;if(opts){i=E('select');opts.forEach(([v,t])=>i.append(E('option','',{value:v,textContent:t})))}else{i=E('input','',{type:type||'text'});if(type=='number')i.min=0}
+
+i.value=n[key]??'';i.onchange=()=>{snap();n[key]=type=='number'?Math.max(0,Math.min(key=='p'?100:1e9,+i.value||0)):i.value;if(key=='t'&&n.child)n.child.title=n.t;if(key=='k'&&!f&&n.k!='task'&&!n.child)n.child=newLevel(n.k,n.t);commit();render()};w.append(i);a.append(w)};
+
+if(f){F('Texto','t');F('Símbolo','k','',Object.keys(SH).map(k=>[k,SH[k].n]));F('Tiempo (min)','tm','number');F('Distancia (m)','ds','number');F('Responsable','o')}
+
+else{F('Título','t');F('Icono (emoji)','ic');F('Responsable','o');F('Estado','s','',Object.entries(ST).map(([k,v])=>[k,v[0]]));F('Tipo','k','',[['task','Tarea'],['map','Carpeta (sub-nivel)'],['flow','Diagrama de flujo']]);F('Avance % (si tiene sub-nivel se calcula solo)','p','number')}
+
+const b=E('div','bt'),d=E('button','er',{textContent:'🗑 Eliminar',onclick:()=>delNode(n.id)}),c=E('button','',{textContent:'⧉ Duplicar',onclick:()=>{snap();const m=JSON.parse(JSON.stringify(n));m.id=uid();m.x+=30;m.y+=30;l.nodes.push(m);commit();render();setSel(m.id)}});b.append(c,d);a.append(b)}
+
+function setSel(id){sel=id;document.querySelectorAll('.n').forEach(e=>e.classList.toggle('sel',e.dataset.id==id));inspector()}
+
+/* ---- acciones ---- */
+
+function add(k){const l=lvl(),s=l.nodes.find(n=>n.id==sel);snap();const c=cv.getBoundingClientRect();let n;
+
+if(l.kind=='map'){const i=l.nodes.length,a=-Math.PI/2+i*.9;n=node(k,{task:'Nueva tarea',map:'Nueva carpeta',flow:'Nuevo flujo'}[k],Math.round(Math.cos(a)*(340+i*12)-115),Math.round(Math.sin(a)*(250+i*8)-46));if(k!='task')n.child=newLevel(k,n.t)}
+
+else{n=node(k,SH[k].n.split(' ')[0],0,0);const[w]=dims(l,n);if(s){const[,sh]=dims(l,s);n.x=s.x+dims(l,s)[0]/2-w/2;n.y=s.y+sh+50;if(k!='note')l.edges.push({a:s.id,b:n.id,l:''})}
+
+else{n.x=Math.round(((c.width/2-view.x)/view.k-w/2)/10)*10;n.y=Math.round(((c.height/2-view.y)/view.k-30)/10)*10}}
+
+l.nodes.push(n);commit();render();setSel(n.id)}
+
+function delNode(id){const l=lvl(),n=l.nodes.find(n=>n.id==id);if(!n)return;if(n.child&&n.child.nodes.length&&!confirm('Se eliminará también todo el contenido de este sub-nivel. ¿Continuar?'))return;
+
+snap();l.nodes=l.nodes.filter(m=>m.id!=id);l.edges=l.edges.filter(e=>e.a!=id&&e.b!=id);sel=null;commit();render()}
+
+function openNode(id){const n=lvl().nodes.find(n=>n.id==id);if(!n)return;if(!n.child)n.child=newLevel(n.k,n.t);path.push(id);sel=null;link=null;render();fit()}
+
+function doLink(id){const l=lvl();if(link===''){link=id;setSel(id);toast('Ahora elige el destino');return}if(link==id)return;
+
+const a=l.nodes.find(n=>n.id==link);let lb='';if(a&&a.k=='dec')lb=(prompt('Etiqueta de la salida (SI / NO)','SI')||'').toUpperCase();
+
+snap();l.edges.push({a:link,b:id,l:lb});commit();link='';drawEdges();setSel(id)}
+
+function editEdge(i){const l=lvl(),e=l.edges[i];if(!e)return;const v=prompt('Etiqueta de la conexión. Escribe BORRAR para eliminarla.',e.l||'');if(v===null)return;snap();if(v.trim().toUpperCase()=='BORRAR')l.edges.splice(i,1);else e.l=v.trim();commit();drawEdges()}
+
+/* ---- interacción ---- */
+
+cv.addEventListener('pointerdown',e=>{const h=e.target.closest('.hit');if(h)return editEdge(+h.dataset.e);
+
+const ob=e.target.closest('[data-open]');if(ob)return openNode(ob.dataset.open);
+
+const ne=e.target.closest('.n'),l=lvl();
+
+if(ne){const n=l.nodes.find(n=>n.id==ne.dataset.id);if(link!==null&&l.kind=='flow')return doLink(n.id);setSel(n.id);drag={n,sx:e.clientX,sy:e.clientY,ox:n.x,oy:n.y,mv:0}}
+
+else{setSel(null);pan={sx:e.clientX,sy:e.clientY,vx:view.x,vy:view.y}}});
+
+addEventListener('pointermove',e=>{if(drag){const d=drag,dx=(e.clientX-d.sx)/view.k,dy=(e.clientY-d.sy)/view.k;if(!d.mv){if(Math.hypot(dx,dy)*view.k<3)return;snap();d.mv=1}
+
+const g=lvl().kind=='flow'?10:1;d.n.x=Math.round((d.ox+dx)/g)*g;d.n.y=Math.round((d.oy+dy)/g)*g;const el=document.querySelector(`[data-id="${d.n.id}"]`);if(el){el.style.left=d.n.x+'px';el.style.top=d.n.y+'px'}drawEdges()}
+
+else if(pan){view.x=pan.vx+e.clientX-pan.sx;view.y=pan.vy+e.clientY-pan.sy;applyView()}});
+
+addEventListener('pointerup',()=>{if(drag&&drag.mv){commit();metrics()}drag=pan=null});
+
+cv.addEventListener('wheel',e=>{e.preventDefault();const r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top,k=Math.min(2.5,Math.max(.2,view.k*(e.deltaY<0?1.1:.9)));view.x=mx-(mx-view.x)*k/view.k;view.y=my-(my-view.y)*k/view.k;view.k=k;applyView()},{passive:false});
+
+cv.addEventListener('dblclick',e=>{if(!e.target.closest('.ctr'))return;const l=lvl(),t=prompt('Título',l.title);if(t===null)return;snap();l.title=t.trim()||l.title;const s=prompt('Subtítulo',l.sub);if(s!==null)l.sub=s;commit();render()});
+
+addEventListener('keydown',e=>{const ti=/INPUT|SELECT|TEXTAREA/.test(e.target.tagName),m=e.ctrlKey||e.metaKey;
+
+if(m&&!ti&&e.key.toLowerCase()=='z'){e.preventDefault();e.shiftKey?redo():undo()}else if(m&&!ti&&e.key.toLowerCase()=='y'){e.preventDefault();redo()}
+
+else if(!ti&&sel&&(e.key=='Delete'||e.key=='Backspace'))delNode(sel);else if(e.key=='Escape'){link=null;setSel(null);tools()}});
+
+/* ---- proyectos y plantillas ---- */
+
+function mk(name,tp){const p={id:crypto.randomUUID?crypto.randomUUID():uid()+uid(),name,updated:Date.now(),root:newLevel('map',name)},r=p.root;
+
+const ring=a=>a.forEach((t,i)=>{const g=-Math.PI/2+2*Math.PI*i/a.length;r.nodes.push(node('map',t,Math.round(Math.cos(g)*360-115),Math.round(Math.sin(g)*260-46),{child:newLevel('map',t)}))});
+
+if(tp=='pmbok'){r.sub='Guía PMBOK';ring(['Inicio','Planificación','Ejecución','Monitoreo y control','Cierre'])}
+
+if(tp=='dmaic'){r.sub='Lean Six Sigma';ring(['Definir','Medir','Analizar','Mejorar','Controlar'])}
+
+if(tp=='asme'){r.sub='Estudio de métodos';const f=newLevel('flow','Despacho de pedidos');let y=0,pv=null;
+
+[['start','Inicio',0,0],['op','Recibir pedido',3,0],['trans','Llevar a almacén',2,40],['delay','Espera de surtido',10,0],['op','Surtir productos',8,0],['insp','Verificar vs. pedido',4,0],['trans','Llevar a embarque',2,30],['store','Almacén temporal',15,0],['op','Cargar y despachar',6,0],['start','Fin',0,0]].forEach(([k,t,tm,ds])=>{const n=node(k,t,-SH[k].w/2,y,{tm,ds});y+=SH[k].h+50;f.nodes.push(n);if(pv)f.edges.push({a:pv.id,b:n.id,l:''});pv=n});
+
+r.nodes.push(node('flow','Despacho de pedidos',-115,-300,{child:f,ic:'📦'}))}
+
+return p}
+
+function fillSel(){const s=$('#ps');s.replaceChildren(...DB.list.map(p=>E('option','',{value:p.id,textContent:p.name})));s.value=DB.cur}
+
+function openProj(id){DB.cur=id;path=[];sel=null;link=null;hist=[];fut=[];LS.s('dp_v1',JSON.stringify(DB));fillSel();render();fit()}
+
+$('#ps').onchange=e=>openProj(e.target.value);
+
+$('#np').onclick=()=>{const n=prompt('Nombre del proyecto','Nuevo proyecto');if(!n)return;const p=mk(n.trim(),'blank');DB.list.push(p);openProj(p.id);save()};
+
+$('#tp').onchange=e=>{const v=e.target.value;e.target.value='';if(!v)return;const lb=e.target.selectedOptions[0]?.textContent||'';const n=prompt('Nombre del proyecto',{pmbok:'Proyecto PMBOK',dmaic:'Proyecto DMAIC',asme:'Estudio de métodos',blank:'Nuevo proyecto'}[v]);if(!n)return;const p=mk(n.trim(),v);DB.list.push(p);openProj(p.id);save()};
+
+$('#dp').onclick=async()=>{if(!confirm('¿Eliminar este proyecto por completo?'))return;const id=DB.cur;DB.list=DB.list.filter(p=>p.id!=id);if(sb&&user)await sb.from('projects').delete().eq('id',id);if(!DB.list.length)DB.list.push(mk('Mi primer proyecto','dmaic'));openProj(DB.list[0].id);save()};
+
+$('#un').onclick=undo;$('#rd').onclick=redo;$('#ft').onclick=fit;
+
+/* ---- exportar / importar (con "gate" de registro) ---- */
+
+function need(){if(GATE&&SB_URL&&!user){authOpen('Crea una cuenta gratuita para exportar tus diagramas.');return false}return true}
+
+$('#ex').onclick=()=>{if(!need())return;const a=E('a','',{href:URL.createObjectURL(new Blob([JSON.stringify({v:1,name:P().name,root:P().root})],{type:'application/json'})),download:P().name.replace(/[^\w-]+/g,'_')+'.json'});a.click();setTimeout(()=>URL.revokeObjectURL(a.href),999)};
+
+$('#pr').onclick=()=>{if(!need())return;fit();setTimeout(print,150)};
+
+$('#im').onclick=()=>$('#fi').click();
+
+$('#fi').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{const d=JSON.parse(await f.text()),ok=l=>l&&Array.isArray(l.nodes)&&(l.kind=='map'||l.kind=='flow')&&l.nodes.every(n=>n&&typeof n.id=='string'&&(!n.child||ok(n.child)));
+
+if(!ok(d.root))throw 0;d.root.edges=d.root.edges||[];const p={id:crypto.randomUUID?crypto.randomUUID():uid()+uid(),name:String(d.name||'Importado').slice(0,80),updated:Date.now(),root:d.root};DB.list.push(p);openProj(p.id);save();toast('✅ Proyecto importado')}catch{toast('❌ Archivo no válido')}};
+
+/* ---- cuentas y nube (Supabase) ---- */
+
+function authOpen(m){$('#am-m').textContent=m||'';$('#am').showModal()}
+
+async function initCloud(){if(!SB_URL)return;await new Promise(ok=>{const s=E('script','',{src:'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js',onload:ok,onerror:ok});document.head.append(s)});
+
+if(!window.supabase)return toast('No se pudo cargar el servicio de cuentas');sb=supabase.createClient(SB_URL,SB_KEY);const{data}=await sb.auth.getSession();setUser(data.session&&data.session.user);sb.auth.onAuthStateChange((_,s)=>setUser(s&&s.user))}
+
+async function setUser(u){const was=user;user=u||null;$('#ub').textContent=user?'👤 '+user.email.split('@')[0]+' · Salir':'👤 Ingresar';$('#cl').textContent=user?'☁ Nube activa':'💾 Solo local';if(!user||(was&&was.id==user.id))return;
+
+const{data,error}=await sb.from('projects').select('id,name,data,updated_at');if(error||!data)return;
+
+data.forEach(r=>{const t=Date.parse(r.updated_at),x=DB.list.find(p=>p.id==r.id);if(!x)DB.list.push({id:r.id,name:r.name,root:r.data,updated:t});else if(t>x.updated){x.name=r.name;x.root=r.data;x.updated=t}});
+
+DB.list.forEach(p=>{if(!data.some(r=>r.id==p.id))cloudSave(p)});fix();LS.s('dp_v1',JSON.stringify(DB));fillSel();render()}
+
+async function cloudSave(p){p=p||P();if(!sb||!user||!p)return;const{error}=await sb.from('projects').upsert({id:p.id,user_id:user.id,name:p.name,data:p.root,updated_at:new Date(p.updated).toISOString()});$('#cl').textContent=error?'⚠ Error de sincronización':'☁ Sincronizado'}
+
+$('#ub').onclick=async()=>{if(!SB_URL)return toast('Modo demo: configura SB_URL y SB_KEY para activar las cuentas');if(user){await sb.auth.signOut();toast('Sesión cerrada')}else authOpen()};
+
+async function auth(up){const em=$('#em').value.trim(),pw=$('#pw').value,m=$('#am-m');if(!sb)return;if(!em||pw.length<8)return m.textContent='Escribe un correo válido y una contraseña de 8+ caracteres.';
+
+const r=up?await sb.auth.signUp({email:em,password:pw}):await sb.auth.signInWithPassword({email:em,password:pw});
+
+if(r.error)m.textContent=r.error.message;else if(up&&!r.data.session)m.textContent='Revisa tu correo para confirmar la cuenta y luego entra.';else{m.textContent='';$('#am').close()}}
+
+$('#b1').onclick=()=>auth(0);$('#b2').onclick=()=>auth(1);$('#b3').onclick=()=>$('#am').close();
+
+$('#b4').onclick=async()=>{const em=$('#em').value.trim();if(!sb||!em)return $('#am-m').textContent='Escribe tu correo primero.';await sb.auth.resetPasswordForEmail(em);$('#am-m').textContent='Si el correo existe, recibirás un enlace.'};
+
+
+
+/* ---- tutorial de bienvenida Health-Bin ---- */
+const HB_GUIDE_KEY='lineabase_hb_tutorial_v1';
+function hbGuideStored(){return LS.g(HB_GUIDE_KEY)==='1'}
+function hbGuideOpen(force=false){
+  if(!force&&hbGuideStored())return;
+  const g=$('#welcomeTutorial');
+  if(!g)return;
+  $('#hbGuideNoShow').checked=hbGuideStored();
+  g.classList.add('show');
+  g.setAttribute('aria-hidden','false');
+  document.body.dataset.guideOpen='1';
+  setTimeout(()=>$('#hbGuideStart')?.focus(),120);
+}
+function hbGuideClose(){
+  const g=$('#welcomeTutorial');
+  if(!g)return;
+  try{
+    if($('#hbGuideNoShow').checked)localStorage.setItem(HB_GUIDE_KEY,'1');
+    else localStorage.removeItem(HB_GUIDE_KEY);
+  }catch{}
+  g.classList.remove('show');
+  g.setAttribute('aria-hidden','true');
+  delete document.body.dataset.guideOpen;
+}
+$('#hbHelp').onclick=()=>hbGuideOpen(true);
+$('#hbGuideStart').onclick=hbGuideClose;
+$('#hbGuideClose').onclick=hbGuideClose;
+$('#welcomeTutorial').addEventListener('pointerdown',e=>{if(e.target.id==='welcomeTutorial')hbGuideClose()});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#welcomeTutorial').classList.contains('show'))hbGuideClose()});
+
+
+/* ---- inicio ---- */
+
+$('#cta').href=CTA.url;$('#cta').textContent=CTA.txt;
+
+if(!DB.list.length||!DB.list.some(p=>p.id==DB.cur)){if(!DB.list.length)DB.list.push(mk('Mi primer proyecto','dmaic'));DB.cur=DB.list[0].id}
+
+$('#cl').textContent='💾 Solo local';fillSel();render();requestAnimationFrame(()=>{fit();hbGuideOpen()});addEventListener('resize',fit);initCloud();
+
+</script></body></html>
